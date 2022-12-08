@@ -30,29 +30,24 @@ class Task(models.Model):
         latest = self.__class__.objects.order_by('-order_no').first()
         lowest = self.__class__.objects.order_by('order_no').first()
         current_order_no = int(self.order_no)
-        print("{} ".format(current_order_no))
     
         if int(new_order_no) == int(latest.order_no):
-            print("here 1")
             all_tasks = self.__class__.objects.filter(order_no__lte=latest.order_no)
             for task in all_tasks:
                 task.order_no = int(task.order_no) - 1
         elif int(new_order_no) == int(lowest.order_no):
-            print("here 4")
             all_tasks = self.__class__.objects.filter(order_no__gte=lowest.order_no)
             for task in all_tasks:
                 task.order_no = int(task.order_no) + 1
         # current_order_no    9
         # new_order_no        3                
         elif int(current_order_no) > int(new_order_no):
-            print("here 2")
             all_tasks = self.__class__.objects.filter(order_no__gte=new_order_no,order_no__lt=current_order_no)
             for task in all_tasks:
                 task.order_no = int(task.order_no) + 1
         # current_order_no    3
         # new_order_no        9                
         elif int(current_order_no) < int(new_order_no):
-            print("here 3")
             all_tasks = self.__class__.objects.filter(order_no__gt=current_order_no,order_no__lte=new_order_no)
             for task in all_tasks:
                 task.order_no = int(task.order_no) - 1
@@ -61,7 +56,9 @@ class Task(models.Model):
         self.__class__.objects.bulk_update(all_tasks,['order_no'])
         
         self.order_no = new_order_no
-        self.save(update_fields=['order_no'])
+        result = self.save(update_fields=['order_no'])
+        print(result)
+        return
 
     def delete(self,*args,**kwargs):
         max_task = self.__class__.objects.order_by("-order_no").first()

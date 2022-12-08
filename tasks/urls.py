@@ -7,6 +7,6 @@ router.register(r'task', views.TaskViewSet)
 
 
 urlpatterns = [
-   
+   path('move_item/<int:task_id>/<int:new_order_no>/', views.move_item),
 ]
 
